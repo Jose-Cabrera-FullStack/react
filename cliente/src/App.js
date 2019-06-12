@@ -14,7 +14,7 @@ const client = new ApolloClient({
     console.log('networkError', networkError);
   }
 });
-//11.5
+//"11.5" Siempre se enumera en App.js
 class App extends Component {
   render(){
     return(
