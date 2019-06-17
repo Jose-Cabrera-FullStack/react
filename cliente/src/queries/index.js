@@ -8,3 +8,14 @@ export const CLIENTES_QUERY= gql `{
       empresa
     }
 }`;
+
+export const CLIENTE_QUERY= gql `
+    query ConsultarCliente($id:ID){
+      getClientes(id:$id){
+      nombre
+      apellido
+      empresa
+      }
+    }
+`;
+
