@@ -25,7 +25,7 @@ class NuevoCliente extends Component{
 
     leerCampo = i =>e=>{
         const nuevoEmail = this.state.emails.map((email,index)=> {
-            if(i !==index) return index;
+            if(i !==index) return email;
             return {
                 ...email,
                 email: e.target.value

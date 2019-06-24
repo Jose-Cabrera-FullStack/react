@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import {ACTUALIZAR_CLIENTE} from '../mutations';
+import {Mutation} from 'react-apollo';
 
 class FormularioEditarCliente extends Component {
 
     state =  {
-        emails: []
+        cliente: this.props.cliente,
+        emails: this.props.cliente.emails
     }
 
     nuevoCampo = () => {
@@ -25,19 +28,53 @@ class FormularioEditarCliente extends Component {
             emails: this.state.emails.filter((s, index) => i !== index)
         });
     }
-
+//13.6
     render() { 
+
+        const {nombre, apellido,empresa,edad, tipo} = this.state.cliente;
+
+        console.log(nombre)
+
             const {emails} = this.state;
-           
             return (
-        
-                   <form className="col-md-8 m-3">
+                <Mutation mutation={ACTUALIZAR_CLIENTE}>
+
+                    {actualizarCLiente => (
+                   <form className="col-md-8 m-3" onSubmit ={e=>{
+                       e.preventDefault();
+
+                       const {id,nombre,apellido,empresa,edad,tipo} = this.state;
+                       this.state.cliente;
+
+                       const {emails} = this.state; 
+
+                       const input = {
+                           id, 
+                           nombre,
+                           apellido,
+                           empresa,
+                           edad: Number(edad),
+                           tipo,
+                           emails
+                       }
+                           console.log(input);
+                        
+                   }}>
                             <div className="form-row">
                                 <div className="form-group col-md-6">
                                     <label>Nombre</label>
                                     <input
                                         type="text" 
                                         className="form-control" 
+                                        defaultValue={nombre}
+                                        onChange={e=>{
+                                            this.setState({
+                                                cliente:{
+                                                ...this.state.cliente,
+                                                nombre:e.target.value
+                                                }
+                                            })
+                                        }}
                                     />
                                 </div>
                                 <div className="form-group col-md-6">
@@ -45,6 +82,15 @@ class FormularioEditarCliente extends Component {
                                     <input 
                                         type="text" 
                                         className="form-control" 
+                                        defaultValue={apellido}
+                                        onChange={e=>{
+                                            this.setState({
+                                                cliente:{
+                                                ...this.state.cliente,
+                                                apellido:e.target.value
+                                                }
+                                            })
+                                        }}
                                      />
                                 </div>
                             </div>
@@ -55,9 +101,17 @@ class FormularioEditarCliente extends Component {
                                     <input
                                         type="text"
                                         className="form-control" 
+                                        defaultValue={empresa}
+                                        onChange={e=>{
+                                            this.setState({
+                                                cliente:{
+                                                ...this.state.cliente,
+                                                empresa:e.target.value
+                                                }
+                                            })
+                                        }}
                                     />
                                 </div>
-
                                 {emails.map((input, index) => (
                                     <div key={index} className="form-group col-md-12">
                                         <label>Email {index + 1} : </label>
@@ -95,12 +149,30 @@ class FormularioEditarCliente extends Component {
                                     <input
                                         type="text" 
                                         className="form-control" 
+                                        defaultValue={edad}
+                                        onChange={e=>{
+                                            this.setState({
+                                                cliente:{
+                                                ...this.state.cliente,
+                                                edad:e.target.value
+                                                }
+                                            })
+                                        }}
                                     />
                                 </div>
                                 <div className="form-group col-md-6">
                                     <label>Tipo Cliente</label>  
                                     <select 
                                         className="form-control"
+                                        value={tipo}
+                                        onChange={e=>{
+                                            this.setState({
+                                                cliente:{
+                                                ...this.state.cliente,
+                                                tipo:e.target.value
+                                                }
+                                            })
+                                        }}
                                     >
                                         <option value="">Elegir...</option>
                                         <option value="PREMIUM">PREMIUM</option>
@@ -110,6 +182,8 @@ class FormularioEditarCliente extends Component {
                             </div>
                             <button type="submit" className="btn btn-success float-right">Guardar Cambios</button>
                         </form>
+                    )}
+            </Mutation>
             )      
     }
 }
