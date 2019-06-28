@@ -4,6 +4,8 @@ mongoose.Promise = global.Promise;
 
 mongoose.connect('mongodb://localhost/clientes',{useNewUrlParse:true});
 
+mongoose.set('setFindAndModify',false);
+
 //Definir el schema de clientes
 
 const clientesSchema = new mongoose.Schema({
@@ -18,4 +20,12 @@ const clientesSchema = new mongoose.Schema({
 
 const Clientes = mongoose.model('clientes',clientesSchema);
 
-export {Clientes};
+//Productos
+const productosSchema = new mongoose.Schema({
+    nombre: String,
+    precio: Number,
+    stock: Number
+});
+const Productos = mongoose.model('productos',productosSchema);
+
+export {Clientes, Productos};

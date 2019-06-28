@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import {CLIENTE_QUERY} from '../queries';
+import {CLIENTE_QUERY} from '../../queries';
 import {Query} from 'react-apollo';
 
 import FormularioEditarCliente from './FormularioEditarCliente';
@@ -18,7 +18,7 @@ class EditarCliente extends Component {
                 <div className="row justify-content-center">
                     <Query query={CLIENTE_QUERY} variables={{id}}>
                     
-                    {({loading,error,data})=>{
+                    {({loading,error,data, refetch})=>{
                         if(loading) return 'Cargando...';
                         if(error) return `Error! ${error.message}`;
                         
@@ -26,7 +26,7 @@ class EditarCliente extends Component {
                         return (
                             <FormularioEditarCliente
                                 cliente={data.getCliente}
-                                id 
+                                refetch={refetch}
                             />
                         )
                     }}
