@@ -1,5 +1,6 @@
-import mongoose from 'moongoose';
+import mongoose from 'mongoose';
 import {Clientes, Productos} from './db';
+import {rejects} from 'assert';
 
 export const resolvers = {
     Query: {
@@ -32,7 +33,15 @@ export const resolvers = {
                     else resolve(producto) 
                 })
             })
-        }
+        },
+        totalProductos:(root)=>{
+            return new Promise((resolve,object)=>{
+                Productos.countDocuments({},(error,count)=>{
+                    if(error) rejects(error)
+                    else resolve(count)
+                })
+            })   
+        },
     },
 
     Mutation:{
@@ -68,7 +77,7 @@ export const resolvers = {
             return new Promise((resolve,object)=>{
                 Clientes.findOneAndDelete({_id:id},(error)=>{
                     if(error) rejects(error)
-                    else resolve("Se eliminó Correctamente")
+                    else resolve("Se eliminó Correctamente el Cliente")
                 })
             }); 
         },
@@ -100,7 +109,7 @@ export const resolvers = {
             return new Promise((resolve,preoducto)=>{
                 Productos.findOneAndDelete({_id:id},(error)=>{
                     if(error) rejects(error);
-                    else resolve('Se eliminó correctamente')     
+                    else resolve('Se eliminó correctamente el Producto')     
                 })
             })
         }

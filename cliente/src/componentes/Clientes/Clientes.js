@@ -6,7 +6,8 @@ import { CLIENTES_QUERY} from '../../queries';
 import { ELIMINAR_CLIENTE} from '../../mutations';
 
 import Paginador from '../Paginador';
-import { runInThisContext } from 'vm';
+import Exito from '../Alertas/Exito';
+
 
 class Clientes extends Component{
 
@@ -16,14 +17,18 @@ class Clientes extends Component{
         paginador: {
             offset:0,
             actual:1
+        },
+        alerta:{
+            mostrar:false,
+            mesaje:''
         }
     }
-//16.01
+
     paginaAnterior = () => {
         this.setState({
             paginador: {
-                offset : this.state.paginador.offset + this.limite,
-                actual: this.state.paginador.actual + 1
+                offset : this.state.paginador.offset - this.limite,
+                actual: this.state.paginador.actual - 1
             }
         })   
     }
@@ -37,6 +42,11 @@ class Clientes extends Component{
     }
 
     render(){
+
+        const {alerta:{mostrar, mensaje}} = this.state;
+
+        const alerta = (mostrar) ? <Exito mensaje={mensaje}/> :'';
+
         return(
             <Query query={CLIENTES_QUERY} pollInterval={1000} variables ={{limite: this.limite, offset: this.state.paginador.offset}}>
         {({ loading, error, data, startPolling, stopPolling })=>{
@@ -47,10 +57,11 @@ class Clientes extends Component{
             return(
                 <Fragment>
                     <h2 className="text-center">Listado Cliente</h2>
+                    {alerta}
                     <ul className="list-group mt-4">
                         {data.getClientes.map(item=>{
                             const {id} = item;
-                            
+                            //22.3
                             return (
                             <li key={item.id} className="list-group-item">
                                 <div className="row justify-content-between align-items-center">
@@ -58,7 +69,23 @@ class Clientes extends Component{
                                         {item.nombre} {item.apellido} - {item.empresa}
                                     </div>
                                     <div className="col-md-4 d-flex justify-content-end">
-                                        <Mutation mutation={ELIMINAR_CLIENTE}>
+                                        <Mutation mutation={ELIMINAR_CLIENTE}
+                                        onCompleted={(data)=>{ this.setState({
+                                            alerta:{
+                                                mostrar: true,
+                                                mensaje:data.eliminarCliente
+                                            }
+                                        },()=> {
+                                            setTimeout(() => {
+                                                this.setState({
+                                                    alerta:{
+                                                        mostrar: false,
+                                                        mensaje:''
+                                                    }
+                                                })
+                                            }, 3000);
+                                        })}}
+                                        >
                                             {eliminarCliente => (
                                                 <button type="button" className="btn btn-danger d-block d-md-inline-block mr-2" 
                                                     onClick={()=>{
@@ -79,7 +106,7 @@ class Clientes extends Component{
                         })}
                     </ul>
                     <Paginador actual={this.state.paginador.actual}
-                                totalClientes={data.totalClientes}
+                                total={data.totalClientes}
                                 limite={this.limite}
                                 paginaAnterior={this.paginaAnterior}
                                 paginaSiguiente={this.paginaSiguiente}/>
