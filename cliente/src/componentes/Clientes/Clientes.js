@@ -61,7 +61,7 @@ class Clientes extends Component{
                     <ul className="list-group mt-4">
                         {data.getClientes.map(item=>{
                             const {id} = item;
-                            //22.3
+                            
                             return (
                             <li key={item.id} className="list-group-item">
                                 <div className="row justify-content-between align-items-center">
@@ -69,6 +69,8 @@ class Clientes extends Component{
                                         {item.nombre} {item.apellido} - {item.empresa}
                                     </div>
                                     <div className="col-md-4 d-flex justify-content-end">
+                                        <Link to={`/pedidos/nuevo/${id}`}
+                                            className="btn btn-warning d-block d-md-inline-block mr-2">&#43;Nuevo Pedido</Link>
                                         <Mutation mutation={ELIMINAR_CLIENTE}
                                         onCompleted={(data)=>{ this.setState({
                                             alerta:{
@@ -91,12 +93,11 @@ class Clientes extends Component{
                                                     onClick={()=>{
                                                         if(window.confirm('Seguro que desea eliminar este cliente?')){
                                                             { eliminarCliente({variables:{id}})}
-                                                        }}}>
-                                                    &times;Eliminar
+                                                        }}}>&times;Eliminar
                                                 </button>
                                             )}
                                         </Mutation>
-                                        <Link to={`/cliente/editar/${item.id}`} className="btn btn-success d-block d-md-inline-block">
+                                        <Link to={`/clientes/editar/${item.id}`} className="btn btn-success d-block d-md-inline-block">
                                         Editar Cliente 
                                         </Link>
                                     </div>

@@ -50,7 +50,7 @@ class NuevoCliente extends Component{
                 <h2 className="text-center">Nuevo Cliente</h2>
                 {respuesta}
                 <div className="row justify-content-center">
-                <Mutation mutation={NUEVO_CLIENTE} onCompleted={() => this.props.history.push('/')
+                <Mutation mutation={NUEVO_CLIENTE} onCompleted={() => this.props.history.push('/clientes')
                 //-el onCompleted lleva a la pagina principal
                 }>
                 
