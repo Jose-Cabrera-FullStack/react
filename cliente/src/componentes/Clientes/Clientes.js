@@ -71,6 +71,8 @@ class Clientes extends Component{
                                     <div className="col-md-4 d-flex justify-content-end">
                                         <Link to={`/pedidos/nuevo/${id}`}
                                             className="btn btn-warning d-block d-md-inline-block mr-2">&#43;Nuevo Pedido</Link>
+                                        <Link to={`/pedidos/${id}`}
+                                            className="btn btn-primary d-block d-md-inline-block mr-2">Ver Pedidos</Link>
                                         <Mutation mutation={ELIMINAR_CLIENTE}
                                         onCompleted={(data)=>{ this.setState({
                                             alerta:{

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {Clientes, Productos} from './db';
+import {Clientes, Productos, Pedidos} from './db';
 import {rejects} from 'assert';
 
 export const resolvers = {
@@ -23,8 +23,12 @@ export const resolvers = {
                 })
             })   
         },
-        obtenerProductos: (root,{limite,offset})=>{  
-            return Productos.find({}).limit(limite).skip(offset)
+        obtenerProductos: (root,{limite,offset,stock})=>{  
+            let filtro;
+            if(stock){
+                filtro = {stock: {$gt:0}}
+            }
+            return Productos.find(filtro).limit(limite).skip(offset)
         },
         obtenerProducto : (root,{id})=> {
             return new Promise((resolve,object) => {
@@ -112,6 +116,37 @@ export const resolvers = {
                     else resolve('Se eliminó correctamente el Producto')     
                 })
             })
+        },
+        nuevoPedido: (root,{input}) => {
+            const nuevoPedido = new Pedidos({
+                pedido: input.pedido,
+                total: input.total,
+                fecha: new Date(),
+                cliente: input.cliente,
+                estado: "PENDIENTE"
+            });
+
+            nuevoPedido.id = nuevoPedido._id;
+
+            return new Promise((resolve,object)=>{
+
+                //recorrer y actualizar la cnatidad de productos
+                input.pedido.forEach(pedido => {
+                    Productos.updateOne({_id : pedido.id},
+                        {"$inc":
+                            {
+                                "stock": -pedido.cantidad
+                            }, function(error) {
+                                if(error) return new Error(error)                           
+                        }
+                    })
+                });
+                nuevoPedido.save((error)=>{
+                    if(error) rejects(error)
+                    else resolve(nuevoPedido)
+                })
+            })
+
         }
     }
 }
