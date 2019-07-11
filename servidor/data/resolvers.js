@@ -46,6 +46,14 @@ export const resolvers = {
                 })
             })   
         },
+        obtenerPedidos:(root,{cliente}) =>{
+            return new Promise((resolve,object)=>{
+                Pedidos.find({cliente:cliente},(error,pedido)=>{
+                    if(error) rejects(error);
+                    else resolve(pedido);
+                })
+            })
+        }
     },
 
     Mutation:{
@@ -130,23 +138,44 @@ export const resolvers = {
 
             return new Promise((resolve,object)=>{
 
-                //recorrer y actualizar la cnatidad de productos
-                input.pedido.forEach(pedido => {
-                    Productos.updateOne({_id : pedido.id},
-                        {"$inc":
-                            {
-                                "stock": -pedido.cantidad
-                            }, function(error) {
-                                if(error) return new Error(error)                           
-                        }
-                    })
-                });
                 nuevoPedido.save((error)=>{
                     if(error) rejects(error)
                     else resolve(nuevoPedido)
                 })
             })
 
+        },
+        actualizarEstado: (error,{input})=>{
+            return new Promise((resolve,object)=>{
+
+                
+                //recorrer y actualizar la cnatidad de productos en base del estado del pedido
+                
+                const {estado} = input; 
+
+                let instruccion;
+                if(estado === 'COMPLETADO'){
+                    instruccion= '-';
+                }else if (estado === 'CANCELADO'){
+                    instruccion = '+'
+                }
+
+                input.pedido.forEach(pedido => {
+                    Productos.updateOne({_id : pedido.id},
+                        {"$inc":
+                            {
+                                "stock": `${instruccion}${pedido.cantidad}`
+                            }, function(error) {
+                                if(error) return new Error(error)                           
+                        }
+                    })
+                });
+
+                Pedidos.findOneAndUpdate({_id:input.id},input,{new:true},(error)=>{
+                    if(error) rejects(error);
+                    else resolve ('Se Actualizó Correctamente')
+                })
+            })
         }
     }
 }

@@ -46,6 +46,9 @@ type Cliente {
         obtenerProductos(limite:Int,offset:Int, stock:Boolean): [Producto]
         obtenerProducto(id: ID!): Producto
         totalProductos:String
+
+        #Pedido
+        obtenerPedidos(cliente: String) : [Pedido]
     } 
     input EmailInput{
         email:String
@@ -89,4 +92,5 @@ type Cliente {
         eliminarProducto(id:ID!): String
         #Pedidos
         nuevoPedido(input:PedidoInput) : Pedido
+        actualizarEstado(input:PedidoInput) : String
     }
