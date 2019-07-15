@@ -16,6 +16,9 @@ type Cliente {
         COMPLETADO
         CANCELADO
     }
+    type Token {
+        token: String!
+    }
     type Pedido{
         id:ID
         pedido: [PedidoProducto]
@@ -27,6 +30,10 @@ type Cliente {
     type PedidoProducto{
         id: ID
         cantidad: Int
+    }
+    type ClienteTotal {
+        total: Float
+        cliente: [Cliente]
     }
     type Email{
         email:String
@@ -49,6 +56,9 @@ type Cliente {
 
         #Pedido
         obtenerPedidos(cliente: String) : [Pedido]
+
+        #Graficas
+        topClientes : [ClienteTotal]
     } 
     input EmailInput{
         email:String
@@ -93,4 +103,7 @@ type Cliente {
         #Pedidos
         nuevoPedido(input:PedidoInput) : Pedido
         actualizarEstado(input:PedidoInput) : String
+        #Usuarios
+        crearUsuario(usuario: String!, password: String!): String
+        autenticarUsuario(usuario:String!,password:String!): Token
     }

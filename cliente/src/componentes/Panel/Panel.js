@@ -8,5 +8,5 @@ const Panel = () => {
         <Clientes/>
     </Fragment>);
 }
-//27.2
+
 export default Panel;
