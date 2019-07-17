@@ -2,6 +2,7 @@ import React, { Component, Fragment} from 'react'
 
 import {NUEVO_CLIENTE} from '../../mutations';
 import {Mutation} from 'react-apollo';
+import {withRouter} from 'react-router-dom';
 
 class NuevoCliente extends Component{
     state = {
@@ -43,6 +44,11 @@ class NuevoCliente extends Component{
     }
 
     render() {
+
+        //console.log(this.props.session.obtenerUsuario.id)
+
+        const idVendedor = this.props.session.obtenerUsuario.id;
+
         const {error} = this.state; 
         let respuesta =  (error) ? <p className ="alert alert-danger p-3 text-center">Todos los campos son obligatorios</p>:'';// los dos puntos significa "else"
         return (
@@ -81,7 +87,8 @@ class NuevoCliente extends Component{
                                 empresa,
                                 edad: Number(edad),
                                 tipo,
-                                emails
+                                emails,
+                                vendedor: idVendedor
                             };
                             crearCliente({
                                 variables: {input}
@@ -203,4 +210,4 @@ class NuevoCliente extends Component{
     }
 }
 
-export default NuevoCliente;
+export default withRouter( NuevoCliente);

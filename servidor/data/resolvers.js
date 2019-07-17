@@ -4,6 +4,8 @@ import {rejects} from 'assert';
 
 import bcrypt from 'bcrypt';
 
+const ObjetcId = mongoose.Types.ObjectId;
+
 //generar Token
 import dotenv from 'dotenv';
 dotenv.config({path:'variables.env'});
@@ -18,8 +20,12 @@ const crearToken = (usuarioLogin, secreto, expiresIn) =>{
 
 export const resolvers = {
     Query: {
-        getClientes:(root, {limite,offset})=>{
-            return Clientes.find({}).limit(limite).skip(offset)
+        getClientes:(root, {limite,offset,vendedor})=>{
+            let filtro;
+            if(vendedor){
+                filtro = {vendedor: new ObjetcId(vendedor)}
+            }
+            return Clientes.find(filtro).limit(limite).skip(offset)
         },
         getCliente: (root, {id})=>{
             return new Promise ((resolve,object)=>{
@@ -100,6 +106,16 @@ export const resolvers = {
                     else resolve(resultado);
                 })
             })
+        },
+        obtenerUsuario :(root,args,{usuarioActual})=>{
+            if(!usuarioActual) {
+                return null;
+            }
+            console.log(usuarioActual);
+            //obtener el usuario actual del request del JWT verificado
+            const usuario = Usuarios.findOne({usuario: usuarioActual.usuario});
+
+            return usuario;
         }
     },
 
@@ -112,7 +128,8 @@ export const resolvers = {
                 emails : input.emails,
                 edad : input.edad,
                 tipo : input.tipo,
-                pedidos : input.pedidos
+                pedidos : input.pedidos,
+                vendedor: input.vendedor
             });
             nuevoCliente.id = nuevoCliente._id;
     
@@ -178,7 +195,8 @@ export const resolvers = {
                 total: input.total,
                 fecha: new Date(),
                 cliente: input.cliente,
-                estado: "PENDIENTE"
+                estado: "PENDIENTE",
+                vendedor:input.vendedor
             });
 
             nuevoPedido.id = nuevoPedido._id;
@@ -224,7 +242,7 @@ export const resolvers = {
                 })
             })
         },
-        crearUsuario: async(root,{usuario,password}) => {
+        crearUsuario: async(root,{usuario,nombre,password,rol}) => {
             //revisar si este usario contiene password
             const existeUsuario = await Usuarios.findOne({usuario});
 
@@ -234,7 +252,9 @@ export const resolvers = {
 
             const nuevoUsuario = await new Usuarios({
                 usuario,
-                password
+                nombre,
+                password,
+                rol
             }).save();
 
             return "Creado correctamente";

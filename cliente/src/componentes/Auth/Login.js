@@ -39,11 +39,15 @@ class Login extends Component {
             localStorage.setItem('token', data.autenticarUsuario.token);
 
             //ejecutar el query una vez que se haya iniciado sesion.
+            await this.props.refetch();
 
             //limpiar el state
             this.limpiarState();
             //redireccionar
-
+            setTimeout(()=>{
+                //redireccionar 
+                this.props.history.push('/panel');
+            },1500)
         })
      }//28.13
 

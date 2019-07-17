@@ -11,7 +11,7 @@ import Exito from '../Alertas/Exito';
 
 class Clientes extends Component{
 
-    limite = 3;
+    limite = 6;
 
     state ={
         paginador: {
@@ -42,17 +42,33 @@ class Clientes extends Component{
     }
 
     render(){
-
+        //alerta en caso de que sea exitoso
         const {alerta:{mostrar, mensaje}} = this.state;
 
         const alerta = (mostrar) ? <Exito mensaje={mensaje}/> :'';
+        //obtiene el id del vendedor para mostrar sus clientes
+
+        //console.log(this.props.session.obtenerUsuario);
+
+        let id;
+        const {rol} = this.props.session.obtenerUsuario;
+
+        if(rol === 'VENDEDOR'){
+            id = id = this.props.session.obtenerUsuario.id;
+        }else {
+            id = '';
+        }
+
+        //console.log(id);
 
         return(
-            <Query query={CLIENTES_QUERY} pollInterval={1000} variables ={{limite: this.limite, offset: this.state.paginador.offset}}>
+            <Query query={CLIENTES_QUERY} pollInterval={1000} variables ={{ limite: this.limite, 
+                                                                            offset: this.state.paginador.offset, 
+                                                                            vendedor: id}}>
         {({ loading, error, data, startPolling, stopPolling })=>{
             if(loading) return "Cargando...";
             if(error) return `Error: ${error.message}`;
-            console.log(data);
+            //console.log(data);
 
             return(
                 <Fragment>

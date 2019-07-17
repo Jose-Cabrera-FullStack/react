@@ -77,8 +77,8 @@ export const ACTUALIZAR_ESTADO = gql `
 // Usuarios
 
 export const NUEVO_USUARIO = gql `
-  mutation crearUsuario($usuario:String!,$password:String!){
-    crearUsuario(usuario:$usuario, password:$password)
+  mutation crearUsuario($usuario:String!,$nombre:String!, $password:String!, $rol:String!){
+    crearUsuario(usuario:$usuario,nombre:$nombre password:$password,rol:$rol)
 }
 `;
 

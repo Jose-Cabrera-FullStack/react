@@ -3,12 +3,14 @@ import {Mutation} from 'react-apollo';
 import {NUEVO_USUARIO} from '../../mutations';
 import Error from '../Alertas/Error';
 
-import { withRouter} from 'react-router-dom';
+import { withRouter, Redirect} from 'react-router-dom';
 
 const initialState = {
     usuario: '',
     password: '',
-    repetirPassword: ''
+    repetirPassword: '',
+    nombre: '',
+    rol:''
 }
 
 class Registro extends Component {
@@ -37,9 +39,9 @@ class Registro extends Component {
         });
     }
     validadForm = ()=> {
-        const {usuario,password,repetirPassword} = this.state;
+        const {usuario,password,repetirPassword, nombre, rol} = this.state;
 
-        const noValido = !usuario || !password || password !== repetirPassword;
+        const noValido = !usuario || !password || !nombre || !rol || password  !== repetirPassword;
 
         //console.log(noValido);
 
@@ -47,16 +49,22 @@ class Registro extends Component {
     }
     render() {
 
-        const {usuario, password, repetirPassword} = this.state;
+        const {usuario, password, repetirPassword, nombre, rol} = this.state;
+
+        //console.log(this.props.session);
+
+        const rolUsuario = this.props.session.obtenerUsuario.rol;
+        const redireccion = (rolUsuario !=='ADMINISTRADOR') ? <Redirect to="/clientes"/> : '';
 
         return (
             <Fragment>
+                {redireccion}
                 <h1 className="text-center mb-5">Nuevo Usuario</h1>
                 <div className="row  justify-content-center">
 
                     <Mutation
                         mutation={NUEVO_USUARIO}
-                        variables={{usuario,password}}>
+                        variables={{usuario,password, nombre, rol}}>
                             {(crearUsuario,{loading,error,data})=>{
                                 return(
                                     <form 
@@ -73,29 +81,64 @@ class Registro extends Component {
                                                 placeholder="Nombre Usuario"
                                                 value={usuario} 
                                             />
+                                            <small className ="form-text text-muted">
+                                                (sin espacios y sin caracteres especiales)
+                                            </small>
                                         </div>
+
                                         <div className="form-group">
-                                            <label>Password</label>
+                                            <label>Nombre </label>
                                             <input 
                                                 onChange={this.actualizarState}
-                                                type="password" 
-                                                name="password" 
+                                                type="text" 
+                                                name="nombre" 
                                                 className="form-control" 
-                                                placeholder="Password"
-                                                value={password} 
+                                                placeholder="Nombre Completo"
+                                                value={nombre}  
                                             />
+                                            <small className ="form-text text-muted">
+                                                (agrera el Nombre y Apellido completo)
+                                            </small>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-6">
+                                                <label>Password</label>
+                                                <input 
+                                                    onChange={this.actualizarState}
+                                                    type="password" 
+                                                    name="password" 
+                                                    className="form-control" 
+                                                    placeholder="Password"
+                                                    value={password} 
+                                                />
+                                            </div>
+                                            <div className="form-group col-md-6">
+                                                <label>Repetir Password</label>
+                                                <input 
+                                                    onChange={this.actualizarState}
+                                                    type="password" 
+                                                    name="repetirPassword" 
+                                                    className="form-control" 
+                                                    placeholder="Repetir Password"
+                                                    value={repetirPassword}  
+                                                />
+                                            </div>
                                         </div>
                                         <div className="form-group">
-                                            <label>Repetir Password</label>
-                                            <input 
+                                            <label>Rol: </label>
+
+                                            <select 
+                                                className="form-control"
+                                                value={rol}
+                                                name="rol"
                                                 onChange={this.actualizarState}
-                                                type="password" 
-                                                name="repetirPassword" 
-                                                className="form-control" 
-                                                placeholder="Repetir Password"
-                                                value={repetirPassword}  
-                                            />
+                                                >
+                                                <option value="">Elegir...</option>
+                                                <option value="ADMINISTRADOR">ADMINISTRADOR</option>
+                                                <option value="VENDEDOR">VENDEDOR</option>
+                                            </select>
                                         </div>
+                                        
                                         <button
                                             disabled= {loading || this.validadForm()} 
                                             type="submit" 

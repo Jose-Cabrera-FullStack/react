@@ -19,6 +19,12 @@ type Cliente {
     type Token {
         token: String!
     }
+    type Usuario {
+        usuario: String
+        id: ID
+        nombre: String
+        rol: String
+    }
     type Pedido{
         id:ID
         pedido: [PedidoProducto]
@@ -45,7 +51,7 @@ type Cliente {
         stock: Int!
     }
     type Query {
-        getClientes(limite:Int, offset:Int) : [Cliente]
+        getClientes(limite:Int, offset:Int, vendedor:String) : [Cliente]
         getCliente(id:ID) : Cliente
         totalClientes: String
 
@@ -59,6 +65,9 @@ type Cliente {
 
         #Graficas
         topClientes : [ClienteTotal]
+
+        #Usuarios
+        obtenerUsuario: Usuario
     } 
     input EmailInput{
         email:String
@@ -72,6 +81,7 @@ type Cliente {
         edad: Int!
         tipo:TipoCliente!
         pedidos: [PedidoInput]
+        vendedor: ID
     }
     input ProductoInput{
         id: ID
@@ -86,6 +96,7 @@ type Cliente {
         fecha: String
         cliente: ID
         estado: EstadoPedido
+        vendedor: ID
     }
     input PedidoProductoInput{
         id: ID
@@ -104,6 +115,6 @@ type Cliente {
         nuevoPedido(input:PedidoInput) : Pedido
         actualizarEstado(input:PedidoInput) : String
         #Usuarios
-        crearUsuario(usuario: String!, password: String!): String
+        crearUsuario(usuario: String!, nombre:String!, password: String!,rol:String! ): String
         autenticarUsuario(usuario:String!,password:String!): Token
     }
