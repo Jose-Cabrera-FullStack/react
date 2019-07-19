@@ -41,6 +41,10 @@ type Cliente {
         total: Float
         cliente: [Cliente]
     }
+    type VendedorTotal {
+        total: Float
+        vendedor: [Usuario]
+    }
     type Email{
         email:String
     }
@@ -65,6 +69,7 @@ type Cliente {
 
         #Graficas
         topClientes : [ClienteTotal]
+        topVendedores : [VendedorTotal]
 
         #Usuarios
         obtenerUsuario: Usuario

@@ -80,6 +80,16 @@ export const TOP_CLIENTES = gql `
     }
   }
 `;
+export const TOP_VENDEDORES = gql `
+  query topVendedores {
+    topVendedores{
+      total
+      vendedor{
+        nombre
+      }
+    }
+  } 
+`;
 
 //Usuarios
 

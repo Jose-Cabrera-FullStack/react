@@ -17,11 +17,11 @@ const Header = ({session}) => {
     };
 
 const NavegacionNoAutenticado = ()=>(
-    <h3 to="/" className="navbar-brand text-light font-weight-bold">CRM</h3>
+    <h3 to="/login" className="navbar-brand text-light font-weight-bold">CRM</h3>
 );
 const NavegacionAutenticado = (session)=>( 
     <Fragment>
-    <Link to="/" className="navbar-brand text-light font-weight-bold">
+    <Link to="/panel" className="navbar-brand text-light font-weight-bold">
             CRM
         </Link>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navegacion" aria-controls="navegacion" aria-expanded="false" aria-label="Toggle navigation">

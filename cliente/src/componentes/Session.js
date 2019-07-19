@@ -10,5 +10,5 @@ const Session = Component => props => (
         }}
     </Query>
 )
-//12
+
 export default Session; 
